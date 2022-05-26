@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using PlatformService.Data;
 using PlatformService.SyncDataServices.Http;
 
@@ -16,6 +15,8 @@ builder.Services.AddHttpClient<ICommandDataClient, HttpCommandDataClient>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddSwaggerGen();
+
+System.Console.WriteLine($"--> Command Service Endpoint {builder.Configuration["CommandService"]}");
 
 var app = builder.Build();
 
