@@ -2,14 +2,26 @@ using Microsoft.EntityFrameworkCore;
 using PlatformService.Data;
 using PlatformService.SyncDataServices.Http;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+
 builder.Services.AddControllers();
-builder.Services.AddDbContext<AppDbContext>(opt =>
-    opt.UseInMemoryDatabase("InMem")
-);
+
+if(builder.Environment.IsProduction()){
+    System.Console.WriteLine("--> Using Production Db");
+    builder.Services.AddDbContext<AppDbContext>(opt =>
+        opt.UseSqlServer(builder.Configuration.GetConnectionString("PlatformsConnection"))
+    );
+}
+else{
+    System.Console.WriteLine("--> Using InMem Db");
+    builder.Services.AddDbContext<AppDbContext>(opt =>
+        opt.UseInMemoryDatabase("InMem")
+    );
+}
 builder.Services.AddScoped<IPlatformRepo, PlatformRepo>();
 builder.Services.AddHttpClient<ICommandDataClient, HttpCommandDataClient>();
 builder.Services.AddEndpointsApiExplorer();
@@ -33,6 +45,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-PrepDb.PrepPopulation(app);
+PrepDb.PrepPopulation(app, builder.Environment.IsProduction());
 
 app.Run();
