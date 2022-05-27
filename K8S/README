@@ -1,3 +1,7 @@
 BEFORE applying the ingress-srv be sure to install the Ingress services.
 These can be found at https://github.com/kubernetes/ingress-nginx. Just follow the 
 Getting Started documentation.
+
+
+Also be sure to create the MSSQL password in a Kubernetes secret.
+ - kubectl create secret generic mssql --from-literal=MSSQL_SA_PASSWORD="password1"
