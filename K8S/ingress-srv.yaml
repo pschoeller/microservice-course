@@ -7,7 +7,7 @@ metadata:
     nginx.ingress.kubernetes.io/use-regex: 'true'
 spec:
   rules:
-    - host: acme.com
+    - host: zarble.com
       http:
         paths:
           - path: /api/platforms

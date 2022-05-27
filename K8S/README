@@ -1,0 +1,3 @@
+BEFORE applying the ingress-srv be sure to install the Ingress services.
+These can be found at https://github.com/kubernetes/ingress-nginx. Just follow the 
+Getting Started documentation.
