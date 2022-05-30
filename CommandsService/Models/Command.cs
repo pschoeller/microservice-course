@@ -16,8 +16,8 @@ public class Command{
     public string CommandLine { get; set; } = null!;
     
     [Required]
-    public int Platformid { get; set; }
+    public int PlatformId { get; set; }
     
     
-    public Platform Patform { get; set; } = null!;
+    public Platform Platform { get; set; } = null!;
 }
