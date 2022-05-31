@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using PlatformService.ASyncDataServices;
 using PlatformService.Data;
 using PlatformService.DTOs;
 using PlatformService.Models;
@@ -14,14 +15,17 @@ public class PlatformsController : ControllerBase{
     private readonly IPlatformRepo repository;
     private readonly IMapper mapper;
     private readonly ICommandDataClient commandDataClient;
+    private readonly IMessageBusClient messageBusClient;
 
     public PlatformsController(
             IPlatformRepo repository, 
             IMapper mapper,
-            ICommandDataClient commandDataClient){
+            ICommandDataClient commandDataClient,
+            IMessageBusClient messageBusClient){
         this.repository = repository;
         this.mapper = mapper;
         this.commandDataClient = commandDataClient;
+        this.messageBusClient = messageBusClient;
     }
     
     
@@ -53,11 +57,22 @@ public class PlatformsController : ControllerBase{
         
         var platformReadDTO = mapper.Map<PlatformReadDTO>(platformModel);
         
+        // Send Sync message
         try{
             await commandDataClient.SendPlatformToCommand(platformReadDTO);
         }
         catch(Exception ex){
             System.Console.WriteLine($"--> Could not send synchronously: {ex.Message}");
+        }
+        
+        // Send ASync message
+        try{
+            var platformPublishedDTO = mapper.Map<PlatformPublishedDTO>(platformReadDTO);
+            platformPublishedDTO.Event = "Platform_Published";
+            messageBusClient.PublishNewPlatform(platformPublishedDTO);
+        }
+        catch(Exception ex){
+            System.Console.WriteLine($"--> Could not send asynchronously: {ex.Message}");
         }
         
         return CreatedAtRoute(nameof(GetPlatformById), new {Id = platformReadDTO.Id}, platformReadDTO);
