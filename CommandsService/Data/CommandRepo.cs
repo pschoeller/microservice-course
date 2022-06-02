@@ -48,7 +48,7 @@ public class CommandRepo : ICommandRepo{
     public IEnumerable<Command> GetCommandsForPlatform(int platformId){
         return dbContext
             .Commands
-            .Where(c => c.Id == platformId)
+            .Where(c => c.PlatformId == platformId)
             .OrderBy(c => c.Platform.Name);
     }
 

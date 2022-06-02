@@ -27,6 +27,7 @@ public class CommandsController : ControllerBase{
         }
         
         var commands = repository.GetCommandsForPlatform(platformId);
+        System.Console.WriteLine($"--> Results at controller: {commands.Any().ToString()}");
         return Ok(mapper.Map<IEnumerable<CommandReadDTO>>(commands));
     }
     
